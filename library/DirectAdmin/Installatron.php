@@ -27,79 +27,6 @@ class DirectAdmin_Installatron {
     private $_dbPrefix  = null;
     
     /**
-     * Generate a password.
-     * 
-     * @param integer $length The length of the password.
-     * @return string The generated password.
-     */
-    private function generatePassword($length = 8) {
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $numbers = '0123456789';
-
-        $percent = 0;
-        $pass = '';
-        for ($i = 0; $i < $length; $i++) {
-            $rand = rand(1, 100);
-            if ($rand < $percent) {
-                $percent = 0;
-
-                $pos = rand(0, strlen($numbers) - 1);
-                $pass .= substr($numbers, $pos, 1);
-            } else {
-                $pos = rand(0, strlen($chars) - 1);
-                $pass .= substr($chars, $pos, 1);
-            }
-
-            $percent += 20;
-        }
-
-        return $pass;
-    }
-    
-    /**
-     * Check if an application is a valid application. Change it to wordpress if it isn't.
-     * 
-     * @param string $application Name of an application.
-     * @return string Returns a valid application.
-     */
-    private function checkApplication($application) {
-        switch($application) {
-            case 'opencart':
-            case 'magento':
-            case 'joomla':
-                $application = $application;
-                break;
-            default:
-                $application = 'wordpress';
-                break;
-        }
-        
-        return $application;
-    }
-
-    /**
-     * Run a query for Installatron.
-     * 
-     * @param type $query
-     * @return array Response of the query.
-     */
-    private function query($query) {
-        if ($this->_target != '') {
-            $query['username'] = $this->_target;
-        }
-        
-        $query['cp-username'] = $this->_username;
-        $query['cp-password'] = $this->_password;
-
-        $result = _installatron_call($this->_type, $this->_host, $query, $this->_username, $this->_password, true, "curl");
-        if (isset($query['passwd'])) {
-            $result['data']['cf-passwd'] = $query['passwd'];
-        }
-
-        return $result;
-    }
-
-    /**
      * @param string $host The host of the server.
      * @param string $username The username of the server.
      * @param string $password The password of the server.
@@ -365,6 +292,79 @@ class DirectAdmin_Installatron {
 
         // Run query
         return $this->query($query);
+    }
+    
+    /**
+     * Generate a password.
+     * 
+     * @param integer $length The length of the password.
+     * @return string The generated password.
+     */
+    private function generatePassword($length = 8) {
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $numbers = '0123456789';
+
+        $percent = 0;
+        $pass = '';
+        for ($i = 0; $i < $length; $i++) {
+            $rand = rand(1, 100);
+            if ($rand < $percent) {
+                $percent = 0;
+
+                $pos = rand(0, strlen($numbers) - 1);
+                $pass .= substr($numbers, $pos, 1);
+            } else {
+                $pos = rand(0, strlen($chars) - 1);
+                $pass .= substr($chars, $pos, 1);
+            }
+
+            $percent += 20;
+        }
+
+        return $pass;
+    }
+    
+    /**
+     * Check if an application is a valid application. Change it to wordpress if it isn't.
+     * 
+     * @param string $application Name of an application.
+     * @return string Returns a valid application.
+     */
+    private function checkApplication($application) {
+        switch($application) {
+            case 'opencart':
+            case 'magento':
+            case 'joomla':
+                $application = $application;
+                break;
+            default:
+                $application = 'wordpress';
+                break;
+        }
+        
+        return $application;
+    }
+
+    /**
+     * Run a query for Installatron.
+     * 
+     * @param type $query
+     * @return array Response of the query.
+     */
+    private function query($query) {
+        if ($this->_target != '') {
+            $query['username'] = $this->_target;
+        }
+        
+        $query['cp-username'] = $this->_username;
+        $query['cp-password'] = $this->_password;
+
+        $result = _installatron_call($this->_type, $this->_host, $query, $this->_username, $this->_password, true, "curl");
+        if (isset($query['passwd'])) {
+            $result['data']['cf-passwd'] = $query['passwd'];
+        }
+
+        return $result;
     }
 
 }
